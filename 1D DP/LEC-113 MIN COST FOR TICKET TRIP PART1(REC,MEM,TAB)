@@ -1,0 +1,93 @@
+//RECURSION
+int solve(int n, vector<int>&days,vector<int> &cost, int index){
+
+  //BASE CASE
+  if(index >=n){
+      return 0;
+  }
+  //1day pass
+  int option1 =cost[0] +solve(n,days,cost,index+1);
+
+  //7 days pass
+  int i;
+  for(i=index ;i<n&&days[i]<days[index]+7;i++);
+
+  int option2 =cost[1]+ solve(n,days,cost,i);
+  //Here i is after the 7 index
+
+//30 days pass
+ for(i=index ;i<n&&days[i]<days[index]+30;i++);
+
+  int option3 =cost[2]+ solve(n,days,cost,i);
+
+  return min(option1,min(option2,option3));
+}
+//RECURSION+MEMOIZATION
+int solveMem(int n, vector<int>&days,vector<int> &cost, int index,vector<int>&dp){
+
+  //BASE CASE
+  if(index >=n){
+      return 0;
+  }
+//step3
+  if(dp[index]!=-1)
+return dp[index];
+
+  //1day pass
+  int option1 =cost[0] +solveMem(n,days,cost,index+1,dp);
+
+  //7 days pass
+  int i;
+  for(i=index ;i<n&&days[i]<days[index]+7;i++);
+
+  int option2 =cost[1]+ solveMem(n,days,cost,i,dp);
+  //Here i is after the 7 index
+
+//30 days pass
+ for(i=index ;i<n&&days[i]<days[index]+30;i++);
+
+  int option3 =cost[2]+ solveMem(n,days,cost,i,dp);
+ // step2
+  dp[index] = min(option1,min(option2,option3));
+  return dp[index];
+}
+//RECURSION+TABULATION
+int solveTab(int n, vector<int>&days,vector<int> &cost){
+vector<int> dp(n+1,INT_MAX);
+dp[n]=0;
+ 
+ //here k is index
+ for(int k=n-1;k>=0;k--){
+   //1day pass
+  int option1 =cost[0] +dp[k+1];
+
+  //7 days pass
+  int i;
+  for(i=k ;i<n&&days[i]<days[k]+7;i++);
+
+  int option2 =cost[1]+dp[i];
+  //Here i is after the 7 index
+
+//30 days pass
+ for(i=k ;i<n&&days[i]<days[k]+30;i++);
+
+  int option3 =cost[2]+ dp[i];
+ // step2
+  dp[k] = min(option1,min(option2,option3));
+  
+ }
+  return dp[0];
+}
+
+int minimumCoins(int n, vector<int> days, vector<int> cost)
+{
+   //return solve(n,days,cost,0);
+
+//step 1
+//vector<int> dp(n+1,-1);
+//return solveMem(n,days,cost,0,dp);
+
+
+ return solveTab(n,days,cost);
+
+}
